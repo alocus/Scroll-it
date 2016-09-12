@@ -19,23 +19,6 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        
-        // handle swipe outside of scrollview to improve UX 
-        // Swipe Gesture Recognizers
-        // These can be lets because they aren't mutated and I'm using the latest Selector syntax
-        let swipeRight = UISwipeGestureRecognizer(target: self, action: Selector("respondToSwipeGesture:"))
-        swipeRight.direction = UISwipeGestureRecognizerDirection.right
-        let swipeLeft = UISwipeGestureRecognizer(target: self, action: Selector("respondToSwipeGesture:"))
-        swipeLeft.direction = UISwipeGestureRecognizerDirection.left
-        let swipeUp = UISwipeGestureRecognizer(target: self, action: Selector("respondToSwipeGesture:"))
-        swipeUp.direction = UISwipeGestureRecognizerDirection.up
-        let swipeDown = UISwipeGestureRecognizer(target: self, action: Selector("respondToSwipeGesture:"))
-        swipeDown.direction = UISwipeGestureRecognizerDirection.down
-        
-        self.view.addGestureRecognizer(swipeRight)
-        self.view.addGestureRecognizer(swipeLeft)
-        self.view.addGestureRecognizer(swipeUp)
-        self.view.addGestureRecognizer(swipeDown)
     }
 
     // Put calcualation in viewDidAppear because scrollView size can't be detemined 
@@ -65,7 +48,6 @@ class ViewController: UIViewController {
             
             // position the UIView
             imageView.frame = CGRect(x: Int(newX) - iconSize/2, y: Int(scrollView.frame.size.height/2) - iconSize/2, width: iconSize, height: iconSize)
-            
         }
         
         // scrollView.backgroundColor = UIColor.purple //for debug
@@ -76,7 +58,11 @@ class ViewController: UIViewController {
         scrollView.contentSize = CGSize(width: contentWidth, height: view.frame.size.height)
         
         // print( "Count: \(images.count)")
-
+        
+        // This is to enable gesture recognizer to work outside of the scrollview.
+        // it basically causes the parent view to listen to touches and pass those off to the scrollview, 
+        // and then the scrollview already has methods to react to those gestures
+        view.addGestureRecognizer(scrollView.panGestureRecognizer)
     }
     
     // here are those protocol methods with Swift syntax
@@ -88,23 +74,6 @@ class ViewController: UIViewController {
         return true
     }
     
-    // Debugging - All Swipes Are Detected Now
-    func respondToSwipeGesture(gesture: UIGestureRecognizer) {
-        if let swipeGesture = gesture as? UISwipeGestureRecognizer {
-            switch swipeGesture.direction {
-            case UISwipeGestureRecognizerDirection.right:
-                print("Swiped right")
-            case UISwipeGestureRecognizerDirection.down:
-                print("Swiped down")
-            case UISwipeGestureRecognizerDirection.left:
-                print("Swiped left")
-            case UISwipeGestureRecognizerDirection.up:
-                print("Swiped up")
-            default:
-                break
-            }
-        }
-    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
